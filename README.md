@@ -1,2 +1,3 @@
 # Object
-[book] 오브젝트 - 조영호
+
+### 01.갹체, 설계(<a href="https://github.com/JungwooSim/Object/tree/main/Object" target="_blank">링크</a>)
