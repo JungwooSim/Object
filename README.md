@@ -6,3 +6,4 @@
 ### 04. 설계 품질과 트레이드 오프(<a href="https://github.com/JungwooSim/Object/tree/main/design_quality-trade_off" target="_blank">링크</a>)
 ### 05. 책임 할당하기(<a href="https://github.com/JungwooSim/Object/tree/main/general_responsibility_assignment" target="_blank">링크</a>)
 ### 06. 메시지와 인터페이스(<a href="https://github.com/JungwooSim/Object/tree/main/message-interface" target="_blank">링크</a>)
+### 07. 객체 분해(<a href="https://github.com/JungwooSim/Object/tree/main/object_decomposition" target="_blank">링크</a>)
