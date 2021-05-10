@@ -94,3 +94,19 @@ public class Movie {
 
 클래스 안에서 객체의 인스턴스를 직접 생성하는 방식이 유용한 경우도 있다.</br>
 주로 협력하는 기본 객체를 설정하고 싶은 경우가 여기에 속한다.</br>
+
+**표준 클래스에 대한 의존은 해롭지 않다**
+
+```java
+public abstract class DiscountPolicy {
+	private List<DiscountCondition> conditions = new ArrayList<>();
+
+	public void switchConditions(List<DiscountCondition> conditions) {
+		this.conditions = conditions;
+	}
+}
+```
+클래스를 직접 생성하더라도 가능한 한 추상적인 타입을 사용하는 것이 확장성 측면에서 유리하다.</br>
+위 코드에서 conditions 의 타입으로 인터페이스인 List 를 사용한 것은 이 때문이다.</br>
+이렇게 하면 다양한 List 타입의 객체로 conditions 를 대체할 수 있게 설계의 유연성을 높일 수 있다.</br>
+또, ArrayList 의 코드가 수정될 확률은 0에 가깝기 때문에 인스턴스를 직접생성하더라도 문제가 되지 않기 때문이다.</br>
