@@ -142,3 +142,101 @@ PURE FABRICATION 은 INFORMATION EXPERT 패턴에 따라 책임을 할당한 결
 setter 주입의 단점은 객체가 올바로 생성되기 위해 어떤 의존성이 필수적인지를 명시적으로 표현할 수 없다.</br>
 메서드 주입은 메서드 호출 주입(method call injection) 이라고도 부르며 메서드가 의존성을 필요로 하는 유일한 경우일 때 사용할 수 있다.</br>
 생성자 주입을 통해 의존성을 전달받으면 객체가 올바른 상태로 생성되는데 필요한 의존성을 명확하게 표현할 수 있다는 장점이 있지만 주입된 의존성이 한 두 개의 메서드에서만 사용된다면 각 메서드의 인자로 전달받는 방법이 더 나은 방법이 될 수 있다.</br>
+
+**숨겨진 의존성은 나쁘다**
+
+의존성 주입 외에도 의존성을 해결할 수 있는 다양한 방법이 존재한다.</br>
+그 중에서 가장 널리 사용되는 대표적인 방법은 SERVICE LOCATOR 패턴 이다.</br>
+외부에서 객체에게 의존성을 전달하는 의존성 주입과 달리 SERVICE LOCATOR 의 경우 객체가 직접 SERVICE LOCATOR 에게 의존성을 해결해줄 것을 요청한다.</br>
+
+```java
+public class Movie {
+    private String title;
+    private Duration runningTime;
+    private Money fee;
+    private DiscountPolicy discountPolicy;
+
+    public Movie(String title, Duration runningTime, Money fee) {
+        this.title = title;
+        this.runningTime = runningTime;
+        this.fee = fee;
+        this.discountPolicy = ServiceLocator.discountPolicy();
+    }
+
+    public Money getFee() {
+        return fee;
+    }
+
+    public Money calculateMovieFee(Screening screening) {
+        return fee.minus(discountPolicy.calculateDiscountAmount(screening));
+    }
+}
+---------------------------------------------------------------
+public class ServiceLocator {
+    private static ServiceLocator soleInstance = new ServiceLocator();
+    private DiscountPolicy discountPolicy;
+
+    public static DiscountPolicy discountPolicy() {
+        return soleInstance.discountPolicy;
+    }
+
+    public static void provide(DiscountPolicy discountPolicy) {
+        soleInstance.discountPolicy = discountPolicy;
+    }
+
+    private ServiceLocator() {
+    }
+}
+```
+
+SERVICE LOCATIOR 패턴은 의존성을 해결할 수 있는 가장 쉽고 간단한 도구인 것처럼 의존성을 감추는 단점이 있어서 선호하지 않는다.
+
+SERVICE LOCATIOR 패턴을 사용해야 하는 경우도 있다.</br>
+의존성 주입을 지원하는 프레임워크를 사용하지 못하는 경우나 깊은 호출 계층에 걸쳐 동일한 객체를 계속해서 전달해야 하는 고통을 견디기 어려운 경우에는 어쩔 수 없이 SERVICE LOCATIOR 패턴을 사용하는 것을 고려해야 한다.</br>
+
+가능하다면 의존성을 명시적으로 표현할 수 있는 기법을 사용해야 한다. 의존성 주입은 의존성을 명시적으로 명시할 수 있는 방법 중 하나일 뿐이다.</br>
+요점은 명시적인 의존성에 초점을 맞춘다는 것이다. 그리고 이 방법이 유연성을 향상시키는 가장 효과적인 방법이다.</br>
+
+### 04. 의존성 역전 원칙
+
+**추상화와 의존성 원칙**
+
+```java
+public class Movie {
+	private AmountDiscountPolicy discountPolicy;
+}
+```
+
+<img src="/supple_design/img/9-7.png" width="500px;" />
+
+상위 수준의 변경에 의해 하위 수준이 변경되는 것은 납득할 수 있지만 하위 수준은의 변경으로 인해 상위 수준이 변경돼서는 곤란하다.</br>
+하위 수준의 이슈로 인해 상위 수준에 위치하는 클래스들을 재사용하는 것이 어렵다면 이것 역시 문제가 된다.</br>
+이 경우에도 추상화를 통해 해결할 수 있다.</br>
+
+의존성 역전 원칙(Dependency Inversion Principle, DIP)
+
+- 상위 수준의 모듈은 하위 수준의 모듈에 의존해서는 안된다. 둘 모두 추상화에 의존해야 한다.
+- 추상화는 구체적인 사항에 의존해서는 안된다. 구체적인 상황은 추상화에 의존해야 한다.
+
+**의존성 역전 원칙과 패키지**
+
+역전은 의존성의 방향뿐만 아니라 인터페이스의 소유권에도 적용된다.
+
+<img src="/supple_design/img/9-9.png" width="500px;" />
+
+<img src="/supple_design/img/9-10.png" width="500px;" />
+
+재사용될 필요가 없는 클래스들은 별도로 독립적인 패키지에 모아야 한다. 마틴 파울러는 이 기법을 가리켜 SEPARATED INTERFACE 패턴이라고 부른다.
+
+유연하고 재사용 가능하며 컨텍스트에 독립적인 설계는 전통적인 패러다임이 고수하는 의존성의 방향을 역전시킨다.</br>
+전통적인 패러다임에서는 상위 수준 모듈이 하위 수준 모듈에 의존했다면 객체지향 패러다임에서는 상위 수준 모듈과 하위 수준 모듈이 모두 추상화에 의존한다.</br>
+전통적인 패러다임에서는 인터페이스가 하위 수준 모듈에 속했다면 객체지향 패러다임에서는 인터페이스가 상위 수준 모듈에 속한다.</br>
+훌륭한 객체지향 설계를 위해서는 의존성을 역전시켜야 한다. 그리고 의존성을 역전시켜야지만 유연하고 재사용 가능한 설계를 얻을 수 있다.</br>
+
+### 05. 유연성에 대한 조언
+
+**유연한 설계는 유연성이 필요할 때만 옳다**
+
+유연하고 재사용 가능한 설계란 런타임 의존성과 컴파일타임 의존성의 차이를 인식하고 동일한 컴파일타임 의존성으로부터 다양한 런타임 의존성을 만들 수 있는 코드 구조를 가지는 설계를 의미한다.</br>
+설계의 미덕은 단순함과 명확함으로부터 나온다. 단순하고 명확한 설계를 가진 코드는 읽기 쉽고 이해하기도 편하다.</br>
+유연한 설계는 이와는 다른 길을 걷는다. 변경하기 쉽고 확장하기 쉬운 구조를 만들기 위해서는 단순함과 명확함의 미덕을 버리게 될 가능성이 높다.</br>
