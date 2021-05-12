@@ -10,3 +10,4 @@
 ### 08. 의존성 관리하기(<a href="https://github.com/JungwooSim/Object/tree/main/dependent-management" target="_blank">링크</a>)
 ### 09. 유연한 설계(<a href="https://github.com/JungwooSim/Object/tree/main/supple_design" target="_blank">링크</a>)
 ### 10. 상속과 코드 재사용 (<a href="https://github.com/JungwooSim/Object/tree/main/inheritance-code_reuse" target="_blank">링크</a>)
+### 11. 합성과 유연한 설계 (<a href="https://github.com/JungwooSim/Object/tree/main/composition-supple_design" target="_blank">링크</a>)
